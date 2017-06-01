@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+	<head>
+    	<title>Il tuo carrello</title>
+
+  		<meta name="viewport" content="width=device-width">
+
+		<meta name="description" content="Commit Hardware - La soluzione ai tuoi problemi." />
+		<meta name="author" content="Cristian Borelli, Marco Terraglia, Rodrigo Lopez e Tommaso Costanzo.">
+		<link rel="shortcut icon" href="immagini/favicon.ico"/>
+		 <link rel="stylesheet" type="text/css" href="Bootstrap/css/bootstrap.min.css"/>
+		 <link rel="stylesheet" type="text/css" href="CSS/nostro_css.css"/>
+		 <meta charset="UTF-8">
+		<script type="text/javascript" src="codice_javascript.js"></script>
+		<script src="Bootstrap/js/jquery.js"></script>
+		<script src="Bootstrap/js/bootstrap.min.js"></script>
+		<script src="Jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+	</head>
+
+	<body onload="stampaProdotti();"  id = "home" data-spy="scroll" data-target=".navbar" data-offset="50">
+	<div class = "container">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class = "row">
+				<div class = "col-md-8 col-sm-8">
+
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+
+	    <div class="navbar-header">
+
+	      <a class="navbar-brand" href="#">
+
+					<img src="immagini/logo_commit.png" />
+
+				</a>
+	    </div>
+
+
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav navbar-right">
+	        <li><a id = "home_link" href="index.html" onclick="modificaLinkPerCarrello('home_link','#home');">Home</a></li>
+	        <li><a id = "servizi_link" href="index.html" onclick="modificaLinkPerCarrello('servizi_link','#servizi');">Servizi</a></li>
+	        <li><a id = "prodotti_link" href="index.html" onclick="modificaLinkPerCarrello('prodotti_link','#prodotti');">Prodotti</a></li>
+					<li><a id = "team_link" href="index.html" onclick="modificaLinkPerCarrello('team_link','#team');">Team</a></li>
+					<li><a id = "contatti_link" class = "ultimo_link" href="index.html" onclick="modificaLinkPerCarrello('contatti_link','#contatti');">Contatti</a></li>
+	      </ul>
+	    </div>
+		</div>
+
+		<div  id ="selezione_lingua" class ="col-md-2 ">
+				<select class="form-control">
+			    <option value="it">Italiano</option>
+			    <option value="al">Albanese</option>
+			    <option value="en">Inglese</option>
+		  	</select>
+		</div>
+			<div  class ="col-md-2 nav navbar-right">
+
+				<a  id = "link_carrello" href="">
+					<img id="carrello" src="immagini/img_carrello.png" />
+					<span id = "contatore_carrello">
+						0
+					</span>
+				</a>
+				</div>
+	  </div>
+	</div>
+	</nav>
+
+
+	</form>
+	<div id ="login" style="display: none">
+		<form class="form-inline">
+		  <label for="inlineFormInput">Username</label>
+		  <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Mario">
+
+		  <label for="inlineFormInputGroup">Password</label>
+		  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+		    <input type="Password" class="form-control" id="inlineFormInputGroup" placeholder="******">
+		  </div>
+
+		    <label class="form-check-label">
+		      <input class="form-check-input" type="checkbox"> Ricordami
+		    </label>
+
+		  <button type="submit" class="btn btn-primary">Login</button>
+		</form>
+  </div>
+	<div id = "registrati" style="display: none">
+
+            <form class="form-horizontal" role="form">
+                <h2>Registrazione</h2>
+                <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">Nome completo</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="firstName" placeholder="Full Name" class="form-control" autofocus>
+                        <span class="help-block">Cognome, Nome, es.: Rossi, Mario</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="email" placeholder="Email" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" placeholder="Password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birthDate" class="col-sm-3 control-label">Data di nascita</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="country" class="col-sm-3 control-label">Nazione</label>
+                    <div class="col-sm-9">
+                        <select id="country" class="form-control">
+                            <option>Italia</option>
+                            <option>Spagna</option>
+                            <option>Francia</option>
+                            <option>Inghilterra</option>
+                            <option>Danimarca</option>
+                            <option>Norvegia</option>
+                            <option>Germania</option>
+                            <option>Scozia</option>
+                        </select>
+                    </div>
+                </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Sesso</label>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="radio-inline">
+                                    <input type="radio" name ="sesso">Femmina
+                                </label>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="radio-inline">
+                                    <input type="radio"name ="sesso">Maschio
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">Dichiaro di aver letto e accettato i <a href="#">termini</a>
+                            </label>
+                        </div>
+                    </div>
+                </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <button type="submit" class="btn btn-primary btn-block">Registrati</button>
+                    </div>
+                </div>
+            </form> <!-- /form -->
+	</div>
+
+</div>
+
+
+
+		<h2 id="titolo_carrello"></h2>
+		<div class = "row" style = "width:100%">
+
+			<div id = "Lista_carrello" class = "col-md-7">
+
+			</div>
+
+			<div class ="col-md-2">
+
+			</div>
+			<div id = "tot_carrello" class = "col-md-3">
+
+			</div>
+		</div>
+
+		<section id="fondo_pagina">
+
+			<img src="immagini/logo_commit.png" />
+			<p>
+				Copyright 2017 @ Comm.it s.r.l. - P.IVA 123456789</p>
+
+			<div id="social">
+				<a target="_blank" href="https://www.facebook.com/commitsoftware"> <img src="immagini/img_facebook.png" /> </a>
+				<a target="_blank" href="https://twitter.com/commitsoftware"> <img src="immagini/img_twitter.png" /> </a>
+				<a target="_blank" href="https://www.youtube.com/user/CommitUniversity"> <img src="immagini/img_youtube.png" /></a>
+			</div>
+		</section>
+
+<ul class="breadcrumb">
+  <li><a href="#" onclick=" RegistraLogin('login','registrati');">Login</a></li>
+  <li><a href="#" onclick=" RegistraLogin('registrati','login');">Registrati</a></li>
+  <li id = "svuota_carrello"><a href="carrello.html" class="active">Svuota carrello</a></li>
+</ul>
+  </body>
+</html>
