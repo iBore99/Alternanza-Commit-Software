@@ -1,5 +1,4 @@
 var map_prezzi_base;
-
 //FATTO
 class Prodotto {
 
@@ -16,12 +15,20 @@ class Prodotto {
 }
 
 var carrello=angular.module("carrelloAngular",[]);
-carrello.controller("stampaCarrello",function(vettoreStringa){
-    this.vettoreCarrello=vettoreStringa;
+
+carrello.service("informazioniVettore",function(){
+    this.vettore=deserializzaObjDaJson(letturaLink(document.URL));
 });
-carrello.factory("vettoreStringa",function(){
-    return deserializzaObjDaJson(letturaLink(document.URL));
+
+carrello.controller("stampaCarrello",function(informazioniVettore){
+    this.vettoreCarrello=informazioniVettore.vettore;
 });
+
+carrello.controller("Contatore_carrello_ctrl",function(informazioniVettore){
+  this.contatore=informazioniVettore.vettore.length;
+});
+
+
 function serializzaObjInJson(obj){
   return JSON.stringify(obj);
 }
