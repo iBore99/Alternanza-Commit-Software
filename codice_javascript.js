@@ -15,7 +15,13 @@ class Prodotto {
     }
 }
 
-//FATTO
+var carrello=angular.module("carrelloAngular",[]);
+carrello.controller("stampaCarrello",function(vettoreStringa){
+    this.vettoreCarrello=vettoreStringa;
+});
+carrello.factory("vettoreStringa",function(){
+    return deserializzaObjDaJson(letturaLink(document.URL));
+});
 function serializzaObjInJson(obj){
   return JSON.stringify(obj);
 }
