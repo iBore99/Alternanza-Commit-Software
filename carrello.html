@@ -64,8 +64,8 @@
 
 				<a  id = "link_carrello" href="">
 					<img id="carrello" src="immagini/img_carrello.png" />
-					<span id = "contatore_carrello">
-						0
+					<span id = "contatore_carrello" ng-controller = "Contatore_carrello_ctrl as cont">
+						{{cont.contatore}}
 					</span>
 				</a>
 				</div>
