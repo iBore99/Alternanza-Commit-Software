@@ -12,34 +12,119 @@ class Prodotto {
     attr() {
         return this.nome + "\n" + this.prezzo + "€ per la durata di " + this.durata + " mesi.";
     }
+    setImgSrc(nuovo_link){
+      this.pathImmagine = nuovo_link;
+    }
 }
 
-var carrello=angular.module("carrelloAngular",[]);
 
-carrello.service("informazioniVettore",function(){
-    this.vettore=deserializzaObjDaJson(letturaLink(document.URL));
+angular.module("utility", []).service("utilityService",function(){
+
+    this.stringa_prodotti_json = letturaLink(document.URL);
+    this.vett_prodotti_in_carrello = deserializzaObjDaJson(this.stringa_prodotti_json);
+
+    this.vett_prodotti_mostrati =
+    [
+      {
+        titolo: 
+        descrizione:
+        prezzo:
+        testo_garanzia:
+
+      },
+      {
+        titolo:
+        descrizione:
+        prezzo:
+        testo_garanzia:
+      },
+
+      {
+        titolo:
+        descrizione:
+        prezzo:
+        testo_garanzia:
+      },
+
+      {
+        titolo:
+        descrizione:
+        prezzo:
+        testo_garanzia:
+      }
+   ];
+
+    this.serializzaObjInJson = function(obj){
+      return JSON.stringify(obj);
+    }
+
+    this.deserializzaObjDaJson = function(stringa_json) {
+          return eval(stringa_json);
+    }
+
+//map per le path delle immagini che servono per quando si crea il prodotto.
+
+
+    this.map_img_prodotti = {};
+    this.map_img_prodotti["1"] = $("#img_prod_1").attr("src");
+    this.map_img_prodotti["2"] = this.map_img_prodotti["1"];
+    this.map_img_prodotti["3"] = $("#img_prod_2").attr("src");
+    this.map_img_prodotti["4"] = this.map_img_prodotti["3"];
 });
 
-carrello.controller("stampaCarrello",function(informazioniVettore){
-    this.vettoreCarrello=informazioniVettore.vettore;
+
+var carrello = angular.module("carrelloAngular",["utility"]);
+var index = angular.module("indexAngular",["utility"]);
+
+
+carrello.controller("ControllerStampaCarrello",function(utilityService){
+    this.vettoreCarrello = informazioniVettore.vettore;
 });
 
-carrello.controller("Contatore_carrello_ctrl",function(informazioniVettore){
-  this.contatore=informazioniVettore.vettore.length;
+carrello.controller("ControllerContatoreCarrello",function(utilityService){
+  this.contatore = informazioniVettore.vettore.length;
+});
+
+index.controller('ControllerProdotti', function(utilityService){
+//Funzioni per l'aggiunta di un prodotto.
+  this.aggiuntaProdotto = function(num_prodotto){
+
+      //return utilityService.map_img_prodotti[num_prodotto];
+  };
+
+  this.prezzo_finale = [0, 0, 0, 0];
+  this.numero_mese = [1, 1, 1, 1];
+
+
+  this.lista_option = [{
+      name: "1 mese",
+      value: 1
+  }, {
+      name: "3 mesi",
+      value: 3
+  }, {
+      name: "6 mesi",
+      value: 6
+  }, {
+      name: "12 mesi",
+      value: 12
+  }];
+
+  this.setPrezzo = function(id_prodotto){
+    this.prezzo_finale[id_prodotto-1] = this.map_prezzi_base["prezzo_prod_" + id_prodotto]*this.numero_mese[id_prodotto-1];
+  };
+
+  this.map_prezzi_base = {};
+  this.map_prezzi_base["prezzo_prod_1"] = 299;
+  this.map_prezzi_base["prezzo_prod_2"] = 599;
+  this.map_prezzi_base["prezzo_prod_3"] = 199;
+  this.map_prezzi_base["prezzo_prod_4"] = 499;
+
 });
 
 
 function serializzaObjInJson(obj){
   return JSON.stringify(obj);
-}
-
- function set_prezzi() {
-    map_prezzi_base = new Map();
-    map_prezzi_base["prezzo_prod_1"] = $('#prezzo_prod_1').text();
-    map_prezzi_base["prezzo_prod_2"] = $('#prezzo_prod_2').text();
-    map_prezzi_base["prezzo_prod_3"] = $('#prezzo_prod_3').text();
-    map_prezzi_base["prezzo_prod_4"] = $('#prezzo_prod_4').text();
-
 }
 
 //FATTO
@@ -48,49 +133,19 @@ function controlloPresenzaProdotti(){
 }
 
 //FATTO
-function start() {
-    set_prezzi();
-    var cont_carrello;
-    if(document.URL.indexOf("?") != -1)
-      $("#link_carrello").attr("href", "carrello.html?"+document.URL.split("?")[1]);
-    else
-      $("#link_carrello").attr("href", "carrello.html");
-    if(controlloPresenzaProdotti()){
-      var vet_lista_prodotti = deserializzaObjDaJson(letturaLink(document.URL));
-      cont_carrello = vet_lista_prodotti.length;
-    }
-    else{
-      cont_carrello = 0;
-    }
-
-    $("#contatore_carrello").text(cont_carrello);
-
-}
-
-//funzione per il cambio del prezzo
-function cambioPrezzo(durata, id_prezzo) {
-
-    var prezzo = map_prezzi_base[id_prezzo];
-    $("#"+id_prezzo).text( Number(prezzo) * durata);
-}
 
 
 //FATTO
-function creazioneProdotto(num_prodotto){
-  var prezzo_finale = $("#prezzo_prod_"+num_prodotto).text();
-  var durata = $("#durata_prod_"+num_prodotto).value;
-  var nome = $("#nome_prod_"+num_prodotto).text();
-  if(num_prodotto > 2)
-  var img = $("#img_prod_"+"2").attr("src");
-  else var img = $("#img_prod_"+"1").attr("src");
-  return new Prodotto(nome,prezzo_finale,durata,img);
-}
+
 
 //FATTO
-function aggiornamentoContatoreCarrello(operazione){
-  var contatore =$("#link_carrello span").text();
-  if(operazione ? contatore++ : contatore--);
-  $("#link_carrello span").text(contatore);
+function incrementoContatoreCarrello(val){
+  var contatore = $("#link_carrello span").text();
+  $("#link_carrello span").text(contatore+val);
+}
+function decrementoContatoreCarrello(val){
+  var contatore = $("#link_carrello span").text();
+  $("#link_carrello span").text(contatore-val);
 }
 
 //FATTO
@@ -105,7 +160,7 @@ function aggiuntaProdotto(num_prodotto){
 
   vet_lista_prodotti.push(prod);
   link_carrello.attr("href", "carrello.html?" + serializzaObjInJson(vet_lista_prodotti));
-  aggiornamentoContatoreCarrello(1); //Incremento il contatore del carrello.
+  incrementoContatoreCarrello(1); //Incremento il contatore del carrello.
 }
 
 //FATTO
@@ -140,7 +195,7 @@ function letturaLink(s) {
 
 	if(s.indexOf('?') != -1)
 		s = s.split('?')[1];
-  else return "";
+  else return "[]";
     if(s.indexOf('#') != -1)
 		s = s.split("#")[0];
     s = s.replace(/(%22)/g, "\"");
@@ -210,7 +265,7 @@ function aggiornamentoGraficoPagCarrello(vet_lista_prodotti, id_bottone){
     visualizzaPagCarrelloVuota();
   }
 
-  aggiornamentoContatoreCarrello(0);
+  decrementoContatoreCarrello(0);
 }
 
 function startEliminazioneProdotto(id_bottone){

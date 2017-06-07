@@ -2,12 +2,11 @@
 
 h2#titolo_carrello{
   margin-top: 0px;
-  text-align: center;
   margin-bottom: 80px;
 }
 
 #link_carrello{
-   display: flex;
+   //display: flex;
     flex-wrap: wrap;
     margin: auto 0 auto 0;
 }
