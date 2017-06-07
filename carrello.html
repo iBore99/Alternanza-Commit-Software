@@ -15,7 +15,7 @@
 		<script src="Bootstrap/js/jquery.js"></script>
 		<script src="Bootstrap/js/bootstrap.min.js"></script>
 		<script src="Jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.js"></script>
+		
 
 	</head>
 
@@ -44,11 +44,11 @@
 
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav navbar-right">
-	        <li><a id = "home_link" href="index.html" onclick="modificaLinkPerCarrello('home_link','#home');">Home</a></li>
-	        <li><a id = "servizi_link" href="index.html" onclick="modificaLinkPerCarrello('servizi_link','#servizi');">Servizi</a></li>
-	        <li><a id = "prodotti_link" href="index.html" onclick="modificaLinkPerCarrello('prodotti_link','#prodotti');">Prodotti</a></li>
-					<li><a id = "team_link" href="index.html" onclick="modificaLinkPerCarrello('team_link','#team');">Team</a></li>
-					<li><a id = "contatti_link" class = "ultimo_link" href="index.html" onclick="modificaLinkPerCarrello('contatti_link','#contatti');">Contatti</a></li>
+	        <li><a id ="home_link" href=index.html?{{stampa.path()}}>Home</a></li>
+	        <li><a id ="servizi_link" href=index.html?{{stampa.path()}}#servizi >Servizi</a></li>
+	        <li><a id ="prodotti_link" href=index.html?{{stampa.path()}}#prodotti>Prodotti</a></li>
+					<li><a id = "team_link" href=index.html?{{stampa.path()}}#team >Team</a></li>
+					<li><a id = "contatti_link" class = "ultimo_link" >Contatti</a></li>
 	      </ul>
 	    </div>
 		</div>
@@ -62,10 +62,10 @@
 		</div>
 			<div  class ="col-md-2 nav navbar-right">
 
-				<a  id = "link_carrello" href="">
+				<a  id = "link_carrello" href=carrello.html?{{stampa.path()}}>
 					<img id="carrello" src="immagini/img_carrello.png" />
 					<span id = "contatore_carrello">
-						0
+						{{stampa.vettoreCarrello.length}}
 					</span>
 				</a>
 				</div>
@@ -149,8 +149,7 @@
                                 <label class="radio-inline">
                                     <input type="radio"name ="sesso">Maschio
                                 </label>
-                            </div>
-                        </div>
+                           </div>
                     </div>
                 </div> <!-- /.form-group -->
                 <div class="form-group">
@@ -174,22 +173,24 @@
 
 
 
-		<h2 id="titolo_carrello"></h2>
+		<h2 id="titolo_carrello" ng-controller="titoloctrl as titolo">{{titolo.Titolo()}}</h2>
 		<div class = "row" style = "width:100%">
 
-			<div id = "Lista_carrello"   class = "col-md-7">
+			<div id = "Lista_carrello" ng-controller="eliminazioneProdotti as Elimina"   class = "col-md-7">
 				<div ng-repeat="prodotto in stampa.vettoreCarrello" class = "col-md-3">
 						<img ng-src="{{prodotto.pathImmagine}}" class="img_prodotto"></img>
 						<p>{{prodotto.nome}}<br/>Durata:  {{prodotto.durata}} mesi <br/>Prezzo: {{prodotto.prezzo}} € </p>
-						<button onclick="startEliminazioneProdotto(this.getAttribute('id'))" class="btn btn-danger">
+						<button id="{{$index}}" ng-click="Elimina.cancella(this.getAttribute('id'))" class="btn btn-danger">
 							<span>Elimina</span>
-						</button>"
+						</button>
 				</div>
 
 			</div>
 
-			<div class ="col-md-2">
 
+			<div id="tot_carrello" ng-hide="stampa.vuoto()" class ="col-md-2">
+				<h3 style='margin-top:0px'>Totale ordine <span id ='cont_elem_carrello'>{{stampa.vettoreCarrello.length}}</span></h3>
+				<p>Costo totale: <span id='costo_tot'>{{stampa.setTot()}}</span>€</p><button class='btn btn-success' style='margin-top:25px'>procedi all'acquisto</button>
 			</div>
 
 			</div>
@@ -209,7 +210,7 @@
 		</section>
 
 <ul class="breadcrumb">
-  <li><a href="#" onclick=" RegistraLogin('login','registrati');">Login</a></li>
+  <li><a href="#" ng-controller="RegistraLogin as RL">Login</a></li>
   <li><a href="#" onclick=" RegistraLogin('registrati','login');">Registrati</a></li>
   <li id = "svuota_carrello"><a href="carrello.html" class="active">Svuota carrello</a></li>
 </ul>

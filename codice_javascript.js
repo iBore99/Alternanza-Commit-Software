@@ -9,25 +9,76 @@ class Prodotto {
         this.pathImmagine=pathImmagine;
     }
 
-    attr() {
-        return this.nome + "\n" + this.prezzo + "€ per la durata di " + this.durata + " mesi.";
-    }
 }
 
 var carrello=angular.module("carrelloAngular",[]);
 
 carrello.service("informazioniVettore",function(){
     this.vettore=deserializzaObjDaJson(letturaLink(document.URL));
+     if(this.vettore==undefined){
+      this.vettore=[];
+    }
 });
 
 carrello.controller("stampaCarrello",function(informazioniVettore){
-    this.vettoreCarrello=informazioniVettore.vettore;
+      this.vettoreCarrello=informazioniVettore.vettore;
+      this.path=function(){
+        return serializzaObjInJson(informazioniVettore.vettore);
+      }
+      this.vuoto=function(){
+          return getVuoto(informazioniVettore.vettore);
+      };
+      this.setTot=function(){
+        return totale(informazioniVettore.vettore);
+      };
 });
 
-carrello.controller("Contatore_carrello_ctrl",function(informazioniVettore){
-  this.contatore=informazioniVettore.vettore.length;
+carrello.controller("titoloctrl",function(informazioniVettore){   
+      this.Titolo=function(){
+          return setTitolo(informazioniVettore.vettore);
+      };
+});
+carrello.controller("eliminazioneProdotti",function(informazioniVettore){
+  this.cancella=function(id_bottone){
+    startEliminazioneProdotto(id_bottone,informazioniVettore.vettore)
+  };
 });
 
+carrello.controller("RegistraLogin",function(){
+  if($("#"+Id).style.display == 'none' && $(Id2).style.display=='block')
+  {
+    $("#"+Id).style.display='block'
+    $("#"+Id2).style.display='none'
+  }
+  else if($("#"+Id).style.display == 'block'){
+    $("#"+Id).style.display='none'
+  }
+  else{
+    $("#"+Id).style.display='block'
+  }
+});
+
+function getVuoto(vett){
+  var vuoto;
+  if(vett.length==0)
+      vuoto=true;   
+    else
+      vuoto=false;
+    return vuoto;
+}
+function totale(vett){
+  var contTot=0;
+  for (prodotto of vett) {
+      contTot+=Number(prodotto.prezzo);
+  }
+  return contTot;
+}
+function setTitolo(vett){
+  if(vett.length==0)
+      return  "Non ci sono prodotti nel carrello" 
+    else
+      return "Ecco i tuoi prodotti"
+}
 
 function serializzaObjInJson(obj){
   return JSON.stringify(obj);
@@ -47,25 +98,6 @@ function controlloPresenzaProdotti(){
    return (letturaLink($("#link_carrello").attr("href")).indexOf('[') != -1);
 }
 
-//FATTO
-function start() {
-    set_prezzi();
-    var cont_carrello;
-    if(document.URL.indexOf("?") != -1)
-      $("#link_carrello").attr("href", "carrello.html?"+document.URL.split("?")[1]);
-    else
-      $("#link_carrello").attr("href", "carrello.html");
-    if(controlloPresenzaProdotti()){
-      var vet_lista_prodotti = deserializzaObjDaJson(letturaLink(document.URL));
-      cont_carrello = vet_lista_prodotti.length;
-    }
-    else{
-      cont_carrello = 0;
-    }
-
-    $("#contatore_carrello").text(cont_carrello);
-
-}
 
 //funzione per il cambio del prezzo
 function cambioPrezzo(durata, id_prezzo) {
@@ -151,71 +183,12 @@ function letturaLink(s) {
 
 }
 
-
-function stampaProdotti() {
-    $('#link_carrello').attr("href", document.URL);
-    var tot_costo = 0;
-    var cont_carrello;
-    var contatore_bottoni = 0;
-    var testo =$("#Lista_carrello");
-    var vet_lista_prodotti = deserializzaObjDaJson(letturaLink(document.URL));
-    if (vet_lista_prodotti)
-     {
-        cont_carrello=vet_lista_prodotti.length;
-        $('#contatore_carrello').text( cont_carrello);
-        $("#titolo_carrello").text("Lista prodotti nel carrello");
-        for (prodotto of vet_lista_prodotti)
-        {
-          tot_costo += Number(prodotto.prezzo);
-          $("#Lista_carrello").append("<div id=prod_"+contatore_bottoni+"></div>");
-
-          var contenitore= $("#prod_"+contatore_bottoni);
-
-          $(contenitore).append("<img src="+prodotto.pathImmagine+" class=img_prodotto></img><p>"+prodotto.nome + "<br/>" + "Durata: " + prodotto.durata + " mesi <br/>" + "Prezzo: " + prodotto.prezzo + "€ </p><button onclick=startEliminazioneProdotto(this.getAttribute('id')) id="+contatore_bottoni+" class='btn btn-danger'><span>Elimina</span></button>");
-          contatore_bottoni++;
-        }
-        //Qui si crea il riassunto del carrello
-        var sezione_riassunto = $('#tot_carrello');
-        $(sezione_riassunto).append("<h3 style='margin-top:0px'>Totale ordine <span id ='cont_elem_carrello'>"+contatore_bottoni+"</span></h3>");
-        $(sezione_riassunto).append("<p>Costo totale: <span id='costo_tot'>"+tot_costo+"</span>€</p><button class='btn btn-success' style='margin-top:25px'>procedi all'acquisto</button>");
-
-    }
-    else
-    {
-      visualizzaPagCarrelloVuota();
-    }
-
-}
-
-
 function eliminazioneElemHTML(id_elem){
   $("#"+id_elem).parent().remove();
 }
 
-function aggiornamentoGraficoListaCarrello(id_bottone){
-  eliminazioneElemHTML(id_bottone);
-}
-
-function aggiornamentoGraficoRiassuntoCarrello(vet_lista_prodotti, id_bottone){
-  $("#cont_prodotti").text(Number($("#cont_prodotti").text())-1);
-  $("#costo_tot").text(Number($("#costo_tot").text())-vet_lista_prodotti[id_bottone].prezzo);
-  document.getElementById('cont_elem_carrello').innerHTML--;
-}
-
-function aggiornamentoGraficoPagCarrello(vet_lista_prodotti, id_bottone){
-  aggiornamentoGraficoListaCarrello(id_bottone);
-  aggiornamentoGraficoRiassuntoCarrello(vet_lista_prodotti, id_bottone);
-
-  if(!(vet_lista_prodotti.length-1)){
-    visualizzaPagCarrelloVuota();
-  }
-
-  aggiornamentoContatoreCarrello(0);
-}
-
-function startEliminazioneProdotto(id_bottone){
-  var vet_lista_prodotti = deserializzaObjDaJson(letturaLink($("#link_carrello").attr("href")));
-  aggiornamentoGraficoPagCarrello(vet_lista_prodotti, id_bottone);
+function startEliminazioneProdotto(id_bottone,vett){
+  var vet_lista_prodotti = vett;
 
   vet_lista_prodotti=eliminaProdottoDaHTML(vet_lista_prodotti, id_bottone);
   if(vet_lista_prodotti.length > 0)
@@ -235,12 +208,6 @@ function eliminaProdottoDaHTML(vet_lista_prodotti, index){
  return vet_lista_prodotti;
 }
 
-function visualizzaPagCarrelloVuota(){
-
-  $("#titolo_carrello").text( "Non sono presenti prodotti nel tuo carrello");
-  $("#tot_carrello").css("display","none");
-
-}
 
 function RegistraLogin(Id, Id2){
 	if($("#"+Id).style.display == 'none' && $(Id2).style.display=='block')
